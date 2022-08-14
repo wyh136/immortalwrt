@@ -19,6 +19,7 @@ jobs:
       
     - name: Install feeds
       run: ./scripts/feeds install -a
-      
+    - name: download depandence
+      run: make download -j1 V=s
     - name: make
       run: make -j1 V=s
