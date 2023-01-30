@@ -1,17 +1,17 @@
 # SPDX-License-Identifier: GPL-2.0-only
 #
-# Copyright (C) 2021 ImmortalWrt.org
+# Copyright (C) 2021-2022 ImmortalWrt.org
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rtl8189es
-PKG_RELEASE:=1
+PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE_URL:=https://github.com/jwrdegoede/rtl8189ES_linux.git
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_DATE:=2021-03-03
-PKG_SOURCE_VERSION:=03ac413135a355b55b693154c44b70f86a39732e
-PKG_MIRROR_HASH:=5cdd69a0c2383e66ae27b0518b4d6a3e845928767d644e1e2b12095b98ed8fbe
+PKG_SOURCE_DATE:=2022-10-30
+PKG_SOURCE_VERSION:=e58bd86c9d9408c648b1246a0dd76b16856ec172
+PKG_MIRROR_HASH:=1e4acfd7d1f1f2490b6778068f97e7a63b81575dffd98c93e84cecb287e2c7ad
 
 PKG_MAINTAINER:=Hauke Mehrtens <hauke@hauke-m.de>
 PKG_BUILD_PARALLEL:=1
@@ -29,7 +29,8 @@ define KernelPackage/rtl8189es
   AUTOLOAD:=$(call AutoProbe,rtl8189es)
 endef
 
-NOSTDINC_FLAGS = \
+NOSTDINC_FLAGS:= \
+	$(KERNEL_NOSTDINC_FLAGS) \
 	-I$(PKG_BUILD_DIR) \
 	-I$(PKG_BUILD_DIR)/include \
 	-I$(STAGING_DIR)/usr/include/mac80211-backport \
@@ -39,26 +40,18 @@ NOSTDINC_FLAGS = \
 	-include backport/autoconf.h \
 	-include backport/backport.h
 
-EXTRA_KCONFIG:= \
-	CONFIG_RTL8189ES=m \
-	USER_MODULE_NAME=rtl8189es
-
-EXTRA_CFLAGS:= \
+NOSTDINC_FLAGS+= \
 	-DRTW_SINGLE_WIPHY \
 	-DRTW_USE_CFG80211_STA_EVENT \
 	-DCONFIG_IOCTL_CFG80211 \
 	-DBUILD_OPENWRT
 
-MAKE_OPTS:= \
-	$(KERNEL_MAKE_FLAGS) \
-	M="$(PKG_BUILD_DIR)" \
-	NOSTDINC_FLAGS="$(NOSTDINC_FLAGS)" \
-	USER_EXTRA_CFLAGS="$(EXTRA_CFLAGS)" \
-	$(EXTRA_KCONFIG)
-
 define Build/Compile
-	+$(MAKE) $(PKG_JOBS) -C "$(LINUX_DIR)" \
-		$(MAKE_OPTS) \
+	+$(KERNEL_MAKE) $(PKG_JOBS) \
+		M="$(PKG_BUILD_DIR)" \
+		NOSTDINC_FLAGS="$(NOSTDINC_FLAGS)" \
+		CONFIG_RTL8189ES=m \
+		USER_MODULE_NAME=rtl8189es \
 		modules
 endef
 

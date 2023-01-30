@@ -975,6 +975,20 @@ define Device/sercomm_na930
 endef
 TARGET_DEVICES += sercomm_na930
 
+define Device/sitecom_wlr-4100-v1-002
+  SOC := mt7620a
+  BLOCKSIZE := 4k
+  IMAGE_SIZE := 7744k
+  IMAGES += factory.dlf
+  IMAGE/factory.dlf := $$(sysupgrade_bin) | check-size | \
+	senao-header -r 0x0222 -p 0x104A -t 2
+  DEVICE_VENDOR := Sitecom
+  DEVICE_MODEL := WLR-4100
+  DEVICE_VARIANT := v1 002
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci uboot-envtools
+endef
+TARGET_DEVICES += sitecom_wlr-4100-v1-002
+
 define Device/tplink_archer-c20i
   $(Device/tplink-v2)
   SOC := mt7620a
@@ -1142,6 +1156,8 @@ define Device/youku_yk-l1
   DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-sdhci-mt7620 \
 	kmod-usb-ledtrig-usbport
   SUPPORTED_DEVICES += youku-yk1 youku,yk1
+  UIMAGE_MAGIC := 0x12291000
+  UIMAGE_NAME := 400000000000000000000000
 endef
 TARGET_DEVICES += youku_yk-l1
 
@@ -1152,6 +1168,8 @@ define Device/youku_yk-l1c
   DEVICE_MODEL := YK-L1c
   DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-sdhci-mt7620 \
 	kmod-usb-ledtrig-usbport
+  UIMAGE_MAGIC := 0x12291000
+  UIMAGE_NAME := 400000000000000000000000
 endef
 TARGET_DEVICES += youku_yk-l1c
 
